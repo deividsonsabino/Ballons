@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerControllerX : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerControllerX : MonoBehaviour
     public float floatForce;
     private float gravityModifier = 1.5f;
     private Rigidbody playerRb;
+    private bool isLowEnough;
+    public float heightLimit;
 
     public ParticleSystem explosionParticle;
     public ParticleSystem fireworksParticle;
@@ -33,8 +36,14 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y > heightLimit)
+            isLowEnough = false;
+        else
+        {
+            isLowEnough = true;
+        }
         // While space is pressed and player is low enough, float up
-        if (Input.GetKey(KeyCode.Space) && !gameOver)
+        if (Input.GetKey(KeyCode.Space) && !gameOver && isLowEnough)
         {
             playerRb.AddForce(Vector3.up * floatForce);
         }
