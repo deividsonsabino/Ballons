@@ -8,6 +8,7 @@ public class PlayerControllerX : MonoBehaviour
     public bool gameOver;
 
     public float floatForce;
+    private float floatForceGround = 500f;
     private float gravityModifier = 1.5f;
     private Rigidbody playerRb;
     private bool isLowEnough;
@@ -36,16 +37,21 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // While space is pressed and player is low enough, float up
+        Onfloat();
+        if (Input.GetKey(KeyCode.Space) && !gameOver && isLowEnough)
+        {
+            playerRb.AddForce(Vector3.up * floatForce);
+        }
+    }
+
+    private void Onfloat()
+    {
         if (transform.position.y > heightLimit)
             isLowEnough = false;
         else
         {
             isLowEnough = true;
-        }
-        // While space is pressed and player is low enough, float up
-        if (Input.GetKey(KeyCode.Space) && !gameOver && isLowEnough)
-        {
-            playerRb.AddForce(Vector3.up * floatForce);
         }
     }
 
@@ -68,6 +74,12 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
 
+        }
+
+        else if (other.gameObject.CompareTag("Ground"))
+        {
+            Onfloat();
+            playerRb.AddForce(Vector3.up * floatForceGround);
         }
 
     }
